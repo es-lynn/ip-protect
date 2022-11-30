@@ -1,0 +1,44 @@
+{
+  "extends": [
+    "eslint:recommended",
+    "plugin:@typescript-eslint/eslint-recommended"
+  ],
+  "parser": "@typescript-eslint/parser",
+  "plugins": ["prettier", "@typescript-eslint", "simple-import-sort", "no-secrets"],
+  "rules": {
+    // Handled by prettierrc.js
+    "semi": "off",
+    "comma-dangle": "off",
+    "no-extra-semi": "off",
+    "prettier/prettier": "warn",
+
+    // Handled by @typescript-eslint
+    "no-unused-vars": "off",
+    "no-empty": "off",
+
+    // @typescript-eslint
+    "@typescript-eslint/no-empty-function": "warn",
+    "@typescript-eslint/no-unused-vars": [
+      "warn",
+      { "argsIgnorePattern": "^_", "varsIgnorePattern": "^_" }
+    ],
+     "@typescript-eslint/explicit-function-return-type": ["warn", {
+       "allowExpressions": true
+     }],
+
+    // Custom
+    "simple-import-sort/imports": "warn",
+    "no-console": ["warn", { "allow": ["info", "warn", "error"] }],
+    "consistent-return": "error",
+    "prefer-const": "warn",
+    "no-constant-condition": "warn",
+    "dot-notation": "off",
+    "no-secrets/no-secrets":"error",
+    "no-else-return": "warn"
+  },
+  "env": {
+    "node": true,
+    "es6": true
+  },
+  "ignorePatterns": ["**/dist/**", "**/client/sgw-src/**"]
+}
