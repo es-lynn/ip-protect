@@ -1,5 +1,5 @@
-import { ClassConstructor, plainToClass } from 'class-transformer'
-import { validate, validateSync } from 'class-validator'
+import { plainToClass } from 'class-transformer'
+import { validateSync } from 'class-validator'
 import dotenv from 'dotenv'
 
 import { Class } from '../types/Class'

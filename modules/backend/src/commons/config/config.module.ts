@@ -1,6 +1,5 @@
 import { DynamicModule, Module } from '@nestjs/common'
 
-import { EnvService } from '../../app/core/env/env.service'
 import { Env } from '../env/env'
 import { Class } from '../types/Class'
 import { Config } from './config.service'

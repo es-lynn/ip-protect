@@ -3,12 +3,5 @@
   "useNx": true,
   "useWorkspaces": true,
   "version": "0.0.0",
-  "npmClient": "yarn",
-  "packages": [
-    "modules/backend",
-    "modules/frontend",
-    "modules/commons/commons",
-    "modules/commons/commons-backend",
-    "modules/commons/commons-frontend"
-  ]
+  "npmClient": "yarn"
 }
