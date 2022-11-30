@@ -11,4 +11,9 @@ export class EnvSchema {
   @IsNotEmpty()
   @IsBoolean()
   APP_DEV_MODE: boolean
+
+  @Transform(({ value }) => value === 'true')
+  @IsNotEmpty()
+  @IsBoolean()
+  APP_ENABLE_SWAGGER: boolean
 }

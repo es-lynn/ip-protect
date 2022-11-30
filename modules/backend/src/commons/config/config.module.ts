@@ -11,10 +11,16 @@ export class ConfigModule {
     envService: Class<Env<any>>
     configService: Class<Config<any>>
   }): DynamicModule {
+    const factory = {
+      provide: Config,
+      useFactory: () => {
+        return new opts.configService(new opts.envService())
+      }
+    }
     return {
       module: ConfigModule,
-      providers: [opts.envService, opts.configService],
-      exports: [opts.configService],
+      providers: [factory],
+      exports: [factory],
       global: opts.isGlobal ?? false
     }
   }
