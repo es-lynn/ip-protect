@@ -1,0 +1,60 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String      @id @default(uuid())
+  providerId    String
+  provider      String
+  name          String
+  projectUsers  ProjectUser[]
+
+  @@unique([providerId, provider])
+}
+
+model Project {
+  id            String      @id @default(uuid())
+  friendlyId    String      @unique
+  webpages      Webpage[]
+  projectUsers  ProjectUser[]
+  ipAddresses IpAddress[]
+}
+
+model Webpage {
+  id            String      @id @default(uuid())
+  name          String
+  url           String
+  project       Project     @relation(fields: [projectId], references: [id])
+  projectId     String
+
+  @@unique([name, projectId])
+}
+
+model ProjectUser {
+  id            String      @id @default(uuid())
+  isAdmin       Boolean
+  project       Project     @relation(fields: [projectId], references: [id])
+  projectId     String
+  user          User        @relation(fields: [userId], references: [id])
+  userId        String
+  ipAddresses IpAddress[]
+
+  @@unique([projectId, userId])
+}
+
+model IpAddress {
+  id            String      @id @default(uuid())
+  ipAddress     String
+  tag           String
+  project       Project     @relation(fields: [projectId], references: [id])
+  projectId     String
+  projectUser    ProjectUser        @relation(fields: [projectUserId], references: [id])
+  projectUserId  String
+
+  @@unique([ipAddress, projectId])
+}
