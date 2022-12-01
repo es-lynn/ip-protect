@@ -13,6 +13,7 @@ import {
 import { ApiTags } from '@nestjs/swagger'
 import { Request } from 'express'
 
+import { ModelService } from '../../../core/model/model.service'
 import { PrismaService } from '../../../core/prisma/prisma.service'
 import { IpAddressRes } from '../../misc/misc.dto'
 import {
@@ -31,18 +32,18 @@ import {
 @ApiTags('/project/:projectFriendlyId/user/@me/ip-address')
 @Controller('/project/:projectFriendlyId/user/@me/ip-address')
 export class IpAddressController {
-  constructor(private prisma: PrismaService) {}
+  constructor(private db: ModelService) {}
 
   @HttpCode(200)
   @Get('/list')
   async list(@Param() param: ListParam): Promise<ListRes> {
     const me = 'b6862bc4-e1c6-42e5-86af-5044c9799157'
-    const project = await this.prisma.project.findUniqueOrThrow({
-      where: { friendlyId: param.projectFriendlyId }
-    })
-    const projectUser = await this.prisma.projectUser.findUniqueOrThrow({
+    const projectUser = await this.db.projectUser.findUniqueOrThrow({
       where: {
-        projectId_userId: { userId: me, projectId: project.id }
+        projectId_userId: {
+          userId: me,
+          projectId: await this.db.project.findId(param.projectFriendlyId)
+        }
       },
       include: { ipAddresses: true }
     })
@@ -59,19 +60,20 @@ export class IpAddressController {
   @Post('/add')
   async add(@Param() param: addParam, @Body() body: AddBody): Promise<AddRes> {
     const me = 'b6862bc4-e1c6-42e5-86af-5044c9799157'
-    const project = await this.prisma.project.findUniqueOrThrow({
-      where: { friendlyId: param.projectFriendlyId }
-    })
-    const projectUser = await this.prisma.projectUser.findUniqueOrThrow({
+    const projectId = await this.db.project.findId(param.projectFriendlyId)
+    const projectUser = await this.db.projectUser.findUniqueOrThrow({
       where: {
-        projectId_userId: { userId: me, projectId: project.id }
+        projectId_userId: {
+          userId: me,
+          projectId: projectId
+        }
       }
     })
-    const ipAddress = await this.prisma.ipAddress.create({
+    const ipAddress = await this.db.ipAddress.create({
       data: {
         ipAddress: body.ip,
         tag: body.tag,
-        projectId: project.id,
+        projectId: projectId,
         projectUserId: projectUser.id
       }
     })
@@ -90,7 +92,7 @@ export class IpAddressController {
     @Param() param: EditParam,
     @Body() body: EditBody
   ): Promise<EditRes> {
-    const ipAddress = await this.prisma.ipAddress.update({
+    const ipAddress = await this.db.ipAddress.update({
       where: { id: param.ipAddressId },
       data: {
         ipAddress: body.ip,
@@ -109,7 +111,7 @@ export class IpAddressController {
   @HttpCode(200)
   @Post('/:ipAddressId/remove')
   async remove(@Param() param: RemoveParam): Promise<RemoveRes> {
-    await this.prisma.ipAddress.delete({
+    await this.db.ipAddress.delete({
       where: { id: param.ipAddressId }
     })
     return {}

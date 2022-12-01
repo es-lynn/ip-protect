@@ -4,7 +4,6 @@ import { Request } from 'express'
 import { Config } from '../../../commons/config/config.service'
 import { ConfigSchema } from '../../core/config/config.schema'
 import { ConfigService } from '../../core/config/config.service'
-import { ProjectModelClass } from '../../core/model/project.model'
 import { PrismaService } from '../../core/prisma/prisma.service'
 import {
   IpAddressRes,
@@ -15,12 +14,8 @@ import {
 
 @Controller('/')
 export class MiscController {
-  constructor(
-    private prisma: PrismaService,
-    private config: Config<ConfigSchema>
-  ) {
-    console.log('test', config['app'])
-  }
+  constructor(private prisma: PrismaService) {}
+
   @HttpCode(200)
   @Get('/misc/ip-address')
   async ipAddress(@Req() req: Request): Promise<IpAddressRes> {
