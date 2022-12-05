@@ -1,5 +1,5 @@
 import { Transform, Type } from 'class-transformer'
-import { IsBoolean, IsNotEmpty, IsNumber } from 'class-validator'
+import { IsBoolean, IsNotEmpty, IsNumber, IsString } from 'class-validator'
 
 export class EnvSchema {
   @Type(() => Number)
@@ -16,4 +16,14 @@ export class EnvSchema {
   @IsNotEmpty()
   @IsBoolean()
   APP_ENABLE_SWAGGER: boolean
+
+  @Type(() => String)
+  @IsNotEmpty()
+  @IsString()
+  AWS_ACCESS_KEY_ID: string
+
+  @Type(() => String)
+  @IsNotEmpty()
+  @IsString()
+  AWS_SECRET_ACCESS_KEY: string
 }

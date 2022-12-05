@@ -9,7 +9,7 @@ import { nest } from './commons/nest/nest'
 
 async function bootstrap(): Promise<void> {
   const app = await NestFactory.create(AppModule)
-  const cfg: ConfigSchema = app.get(Config)
+  const cfg: ConfigSchema = app.get(ConfigService)
 
   nest.logConfig(app)
 

@@ -41,6 +41,13 @@ import faker from 'faker'
     data: {
       id: '969ad11b-8c7e-45bf-bc0f-18c65f028a7a',
       friendlyId: 'xgw',
+      config: {
+        ipset: {
+          name: 'developers-ipv6',
+          id: '94ed4fd3-617f-4b5a-a291-812ed12ffd93',
+          region: 'ap-southeast-1'
+        }
+      },
       webpages: {
         createMany: {
           data: [

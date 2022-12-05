@@ -2,6 +2,7 @@ import { Controller, Get, HttpCode, Param, Req } from '@nestjs/common'
 import { Request } from 'express'
 
 import { Config } from '../../../commons/config/config.service'
+import { ResBody } from '../../../commons/decorators/ResBody'
 import { ConfigSchema } from '../../core/config/config.schema'
 import { ConfigService } from '../../core/config/config.service'
 import { PrismaService } from '../../core/prisma/prisma.service'

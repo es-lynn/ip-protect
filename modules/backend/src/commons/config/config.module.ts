@@ -1,5 +1,6 @@
 import { DynamicModule, Module } from '@nestjs/common'
 
+import { ConfigService } from '../../app/core/config/config.service'
 import { Env } from '../env/env'
 import { Class } from '../types/Class'
 import { Config } from './config.service'
@@ -12,7 +13,7 @@ export class ConfigModule {
     configService: Class<Config<any>>
   }): DynamicModule {
     const factory = {
-      provide: Config,
+      provide: ConfigService,
       useFactory: () => {
         return new opts.configService(new opts.envService())
       }

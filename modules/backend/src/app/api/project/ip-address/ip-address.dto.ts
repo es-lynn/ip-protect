@@ -1,24 +1,29 @@
+import { ApiTags } from '@nestjs/swagger'
 import { IsNotEmpty, IsString } from 'class-validator'
 
 import { IpAddress } from '../_dto/dto'
 
-export class ListParam {
+class ListResIpAddress extends IpAddress {
+  synced: boolean
+}
+
+export class IpAddressListParam {
   @IsString()
   @IsNotEmpty()
   projectFriendlyId: string
 }
 
-export class ListRes {
-  ipAddresses: IpAddress[]
+export class IpAddressListRes {
+  ipAddresses: ListResIpAddress[]
 }
 
-export class addParam {
+export class IpAddressAddParam {
   @IsString()
   @IsNotEmpty()
   projectFriendlyId: string
 }
 
-export class AddBody {
+export class IpAddressAddBody {
   @IsString()
   @IsNotEmpty()
   ip: string
@@ -28,11 +33,11 @@ export class AddBody {
   tag: string
 }
 
-export class AddRes {
+export class IpAddressAddRes {
   ipAddress: IpAddress
 }
 
-export class EditParam {
+export class IpAddressEditParam {
   @IsString()
   @IsNotEmpty()
   projectFriendlyId: string
@@ -42,7 +47,7 @@ export class EditParam {
   ipAddressId: string
 }
 
-export class EditBody {
+export class IpAddressEditBody {
   @IsString()
   @IsNotEmpty()
   ip: string
@@ -52,11 +57,25 @@ export class EditBody {
   tag: string
 }
 
-export class EditRes {
+export class IpAddressEditRes {
   ipAddress: IpAddress
 }
 
-export class RemoveParam {
+export class IpAddressRemoveParam {
+  @IsString()
+  @IsNotEmpty()
+  projectFriendlyId: string
+}
+
+export class IpAddressRemoveBody {
+  @IsString()
+  @IsNotEmpty()
+  ipAddress: string
+}
+
+export class IpAddressRemoveRes {}
+
+export class IpAddressSyncParam {
   @IsString()
   @IsNotEmpty()
   projectFriendlyId: string
@@ -66,4 +85,4 @@ export class RemoveParam {
   ipAddressId: string
 }
 
-export class RemoveRes {}
+export class IpAddressSyncRes {}

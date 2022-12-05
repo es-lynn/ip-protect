@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common'
 import { PrismaClient } from '@prisma/client'
 
+import { PrismaService } from '../prisma/prisma.service'
 import { IpAddress } from './models/ip-address.model'
 import { Project } from './models/project.model'
 import { ProjectUser } from './models/project-user.model'
@@ -15,7 +16,7 @@ export class ModelService {
   webpage
   ipAddress
 
-  constructor(prisma: PrismaClient) {
+  constructor(prisma: PrismaService) {
     this.project = Project(prisma)
     this.projectUser = ProjectUser(prisma)
     this.user = User(prisma)

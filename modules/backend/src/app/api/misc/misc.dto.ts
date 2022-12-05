@@ -1,8 +1,12 @@
 import { ApiProperty } from '@nestjs/swagger'
-import { IsString } from 'class-validator'
+import { Allow, IsOptional, IsString } from 'class-validator'
 
 export class IpAddressRes {
+  @IsString()
   ipv4: string
+
+  @IsString()
+  @IsOptional()
   ipv6?: string
 }
 

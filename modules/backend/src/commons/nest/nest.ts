@@ -5,12 +5,13 @@ import {
 } from '@nestjs/common'
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger'
 
+import { ConfigService } from '../../app/core/config/config.service'
 import { Config } from '../config/config.service'
 import { ClassValidationError } from '../errors/ClassValidationError'
 import { Format } from '../utils/Format'
 
 function logConfig(app: INestApplication): void {
-  const config = app.get(Config)
+  const config = app.get(ConfigService)
   // TODO: Change to logger
   console.info(config)
 }

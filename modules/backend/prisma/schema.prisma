@@ -23,6 +23,7 @@ model Project {
   webpages      Webpage[]
   projectUsers  ProjectUser[]
   ipAddresses IpAddress[]
+  config Json @default("{}")
 }
 
 model Webpage {

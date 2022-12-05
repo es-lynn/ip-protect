@@ -1,43 +1,38 @@
-import {
-  Body,
-  Controller,
-  Get,
-  HttpCode,
-  HttpStatus,
-  NotImplementedException,
-  Param,
-  Post,
-  Query,
-  Req
-} from '@nestjs/common'
+import { Body, Controller, Get, HttpCode, Param, Post } from '@nestjs/common'
 import { ApiTags } from '@nestjs/swagger'
-import { Request } from 'express'
 
+import { ConfigService } from '../../../core/config/config.service'
 import { ModelService } from '../../../core/model/model.service'
-import { PrismaService } from '../../../core/prisma/prisma.service'
-import { IpAddressRes } from '../../misc/misc.dto'
+import { ProjectType } from '../../../core/model/models/project.type'
+import { AwsIpSet } from '../../../core/services/aws/aws-ipset/aws-ipset'
 import {
-  AddBody,
-  addParam,
-  AddRes,
-  EditBody,
-  EditParam,
-  EditRes,
-  ListParam,
-  ListRes,
-  RemoveParam,
-  RemoveRes
+  IpAddressAddBody,
+  IpAddressAddParam,
+  IpAddressAddRes,
+  IpAddressEditBody,
+  IpAddressEditParam,
+  IpAddressEditRes,
+  IpAddressListParam,
+  IpAddressListRes,
+  IpAddressRemoveBody,
+  IpAddressRemoveParam,
+  IpAddressRemoveRes,
+  IpAddressSyncParam,
+  IpAddressSyncRes
 } from './ip-address.dto'
 
 @ApiTags('/project/:projectFriendlyId/user/@me/ip-address')
 @Controller('/project/:projectFriendlyId/user/@me/ip-address')
 export class IpAddressController {
-  constructor(private db: ModelService) {}
+  constructor(private db: ModelService, private cfg: ConfigService) {}
 
   @HttpCode(200)
   @Get('/list')
-  async list(@Param() param: ListParam): Promise<ListRes> {
+  async list(@Param() param: IpAddressListParam): Promise<IpAddressListRes> {
     const me = 'b6862bc4-e1c6-42e5-86af-5044c9799157'
+    const project = (await this.db.project.findUniqueOrThrow({
+      where: { friendlyId: param.projectFriendlyId }
+    })) as ProjectType
     const projectUser = await this.db.projectUser.findUniqueOrThrow({
       where: {
         projectId_userId: {
@@ -47,33 +42,60 @@ export class IpAddressController {
       },
       include: { ipAddresses: true }
     })
+
+    const awsIpSet = new AwsIpSet({
+      accessKeyId: this.cfg.aws.access_key_id,
+      secretAccessKey: this.cfg.aws.secret_access_key,
+      id: project.config.ipset.id,
+      name: project.config.ipset.name,
+      region: project.config.ipset.region
+    })
+    const ipAddresses = await awsIpSet.getIpAddressesForIpset()
+
     return {
       ipAddresses: projectUser.ipAddresses.map(it => ({
         id: it.id,
         ip: it.ipAddress,
-        tag: it.tag
+        tag: it.tag,
+        synced: ipAddresses.IPSet.Addresses.some(
+          ip => ip.split('/')[0] === it.ipAddress
+        )
       }))
     }
   }
 
   @HttpCode(201)
   @Post('/add')
-  async add(@Param() param: addParam, @Body() body: AddBody): Promise<AddRes> {
+  async add(
+    @Param() param: IpAddressAddParam,
+    @Body() body: IpAddressAddBody
+  ): Promise<IpAddressAddRes> {
     const me = 'b6862bc4-e1c6-42e5-86af-5044c9799157'
-    const projectId = await this.db.project.findId(param.projectFriendlyId)
+    const project = (await this.db.project.findUniqueOrThrow({
+      where: { friendlyId: param.projectFriendlyId }
+    })) as ProjectType
     const projectUser = await this.db.projectUser.findUniqueOrThrow({
       where: {
         projectId_userId: {
           userId: me,
-          projectId: projectId
+          projectId: project.id
         }
       }
     })
+
+    const awsIpSet = new AwsIpSet({
+      accessKeyId: this.cfg.aws.access_key_id,
+      secretAccessKey: this.cfg.aws.secret_access_key,
+      id: project.config.ipset.id,
+      name: project.config.ipset.name,
+      region: project.config.ipset.region
+    })
+    await awsIpSet.addIpAddressesToIpset(body.ip)
     const ipAddress = await this.db.ipAddress.create({
       data: {
         ipAddress: body.ip,
         tag: body.tag,
-        projectId: projectId,
+        projectId: project.id,
         projectUserId: projectUser.id
       }
     })
@@ -86,34 +108,73 @@ export class IpAddressController {
     }
   }
 
-  @HttpCode(200)
-  @Post('/:ipAddressId/edit')
-  async edit(
-    @Param() param: EditParam,
-    @Body() body: EditBody
-  ): Promise<EditRes> {
-    const ipAddress = await this.db.ipAddress.update({
-      where: { id: param.ipAddressId },
-      data: {
-        ipAddress: body.ip,
-        tag: body.tag
-      }
-    })
-    return {
-      ipAddress: {
-        ip: ipAddress.ipAddress,
-        tag: ipAddress.tag,
-        id: ipAddress.id
-      }
-    }
-  }
+  // @HttpCode(200)
+  // @Post('/:ipAddressId/edit')
+  // async edit(
+  //   @Param() param: EditParam,
+  //   @Body() body: EditBody
+  // ): Promise<EditRes> {
+  //   const ipAddress = await this.db.ipAddress.update({
+  //     where: { id: param.ipAddressId },
+  //     data: {
+  //       ipAddress: body.ip,
+  //       tag: body.tag
+  //     }
+  //   })
+  //   return {
+  //     ipAddress: {
+  //       ip: ipAddress.ipAddress,
+  //       tag: ipAddress.tag,
+  //       id: ipAddress.id
+  //     }
+  //   }
+  // }
 
   @HttpCode(200)
-  @Post('/:ipAddressId/remove')
-  async remove(@Param() param: RemoveParam): Promise<RemoveRes> {
-    await this.db.ipAddress.delete({
-      where: { id: param.ipAddressId }
+  @Post('/remove')
+  async remove(
+    @Param() param: IpAddressRemoveParam,
+    @Body() body: IpAddressRemoveBody
+  ): Promise<IpAddressRemoveRes> {
+    const project = (await this.db.project.findUniqueOrThrow({
+      where: { friendlyId: param.projectFriendlyId }
+    })) as ProjectType
+    const awsIpSet = new AwsIpSet({
+      accessKeyId: this.cfg.aws.access_key_id,
+      secretAccessKey: this.cfg.aws.secret_access_key,
+      id: project.config.ipset.id,
+      name: project.config.ipset.name,
+      region: project.config.ipset.region
+    })
+    await awsIpSet.removeIpAddressesFromIpset(body.ipAddress)
+    await this.db.ipAddress.deleteMany({
+      where: {
+        projectId: project.id,
+        ipAddress: body.ipAddress
+      }
     })
     return {}
   }
+
+  // @HttpCode(200)
+  // @Post(':ipAddressId/sync')
+  // async sync(@Param() param: IpAddressSyncParam): Promise<IpAddressSyncRes> {
+  //   const project = (await this.db.project.findUniqueOrThrow({
+  //     where: { friendlyId: param.projectFriendlyId }
+  //   })) as ProjectType
+  //   const ipAddresses = await this.db.ipAddress.findUniqueOrThrow({
+  //     where: { id: param.ipAddressId }
+  //   })
+  //
+  //   const awsIpSet = new AwsIpSet({
+  //     accessKeyId: this.cfg.aws.access_key_id,
+  //     secretAccessKey: this.cfg.aws.secret_access_key,
+  //     id: project.config.ipset.id,
+  //     name: project.config.ipset.name,
+  //     region: project.config.ipset.region
+  //   })
+  //   await awsIpSet.addIpAddressesToIpset(ipAddresses.ipAddress)
+  //
+  //   return {}
+  // }
 }

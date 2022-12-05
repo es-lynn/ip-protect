@@ -1,0 +1,9 @@
+- [ ] Tests
+- [ ] AWS IPSet
+- [ ] Authentication Controller
+- [ ] CI/CD
+  - [ ] Lint, Compile, Test,
+  - [ ] Build
+  - [ ] Deploy
+- [ ] Web Client
+- [ ] Docker
