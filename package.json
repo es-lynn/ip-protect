@@ -2,14 +2,14 @@
   "name": "ip-protect",
   "version": "0.0.0",
   "description": "Application for whitelisting of IP addresses",
-  "repository": "git@github.com:es-lynn/authgw.git",
+  "repository": "git@github.com:es-lynn/ip-protect.git",
   "author": "es-lynn",
   "license": "MIT",
   "private": true,
   "scripts": {
     "setup": "yarn install && lerna bootstrap",
-    "lint:all": "lerna run lint",
-    "lint:fix:all": "lerna run lint:fix",
+    "compile:all": "lerna run compile",
+    "compile:fix:all": "lerna run compile:fix",
     "prepare": "husky install"
   },
   "devDependencies": {
