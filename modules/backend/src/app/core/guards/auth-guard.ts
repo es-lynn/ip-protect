@@ -17,14 +17,14 @@ export class AuthGuard implements CanActivate {
     const req = context.switchToHttp().getRequest()
     const session = req.session
 
-    /** Bearer */
-    if (req.headers.authorization?.startsWith('Bearer')) {
-      const [, accessToken] = req.headers.authorization.split('Bearer ')
-      req.user = await this.prisma.user.findUniqueOrThrow({
-        where: { id: accessToken }
-      })
-      /** Basic */
-    } else if (req.headers.authorization?.startsWith('Basic')) {
+    // /** Bearer */
+    // if (req.headers.authorization?.startsWith('Bearer')) {
+    //   const [, accessToken] = req.headers.authorization.split('Bearer ')
+    //   req.user = await this.prisma.user.findUniqueOrThrow({
+    //     where: { id: accessToken }
+    //   })
+    /** Basic */
+    if (req.headers.authorization?.startsWith('Basic')) {
       const [, base64] = req.headers.authorization.split('Basic ')
       const [username, password] = str.base64Decode(base64).split(':')
       if (password !== this.config.auth.basicPassword) {
