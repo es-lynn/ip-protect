@@ -13,4 +13,10 @@ export type ConfigSchema = {
     access_key_id: string
     secret_access_key: string
   }
+  auth: {
+    redirectUrl: string
+    tokenUrl: string
+    clientId: string
+    clientSecret: string
+  }
 }

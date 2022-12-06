@@ -1,7 +1,6 @@
-import { Get, Module, Param } from '@nestjs/common'
+import { Module } from '@nestjs/common'
 
 import { PrismaModule } from '../../../core/prisma/prisma.module'
-import { IpAddressController } from '../ip-address/ip-address.controller'
 import { WebpageController } from './webpage.controller'
 
 @Module({

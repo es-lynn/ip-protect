@@ -1,4 +1,3 @@
-import { ApiTags } from '@nestjs/swagger'
 import { IsNotEmpty, IsString } from 'class-validator'
 
 import { IpAddress } from '../_dto/dto'

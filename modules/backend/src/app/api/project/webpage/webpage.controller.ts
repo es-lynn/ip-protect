@@ -1,6 +1,7 @@
 import { Body, Controller, Get, HttpCode, Param, Post } from '@nestjs/common'
 import { ApiTags } from '@nestjs/swagger'
 
+import { UseAuthGuard } from '../../../core/guards/decorators/UseAuthGuard'
 import { PrismaService } from '../../../core/prisma/prisma.service'
 import {
   AddBody,
@@ -15,6 +16,7 @@ import {
   ListRes
 } from './webpage.dto'
 
+@UseAuthGuard()
 @ApiTags('/project/:projectFriendlyId/webpage')
 @Controller('/project/:projectFriendlyId/webpage')
 export class WebpageController {

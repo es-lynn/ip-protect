@@ -1,7 +1,24 @@
-import { Body, Controller, Get, HttpCode, Param, Post } from '@nestjs/common'
-import { ApiTags } from '@nestjs/swagger'
+import {
+  Body,
+  Controller,
+  Get,
+  HttpCode,
+  Param,
+  Post,
+  UseGuards
+} from '@nestjs/common'
+import {
+  ApiBasicAuth,
+  ApiBearerAuth,
+  ApiHeader,
+  ApiTags
+} from '@nestjs/swagger'
+import { User } from '@prisma/client'
 
 import { ConfigService } from '../../../core/config/config.service'
+import { AuthGuard } from '../../../core/guards/auth-guard'
+import { AuthUser } from '../../../core/guards/decorators/AuthUser'
+import { UseAuthGuard } from '../../../core/guards/decorators/UseAuthGuard'
 import { ModelService } from '../../../core/model/model.service'
 import { ProjectType } from '../../../core/model/models/project.type'
 import { AwsIpSet } from '../../../core/services/aws/aws-ipset/aws-ipset'
@@ -9,18 +26,14 @@ import {
   IpAddressAddBody,
   IpAddressAddParam,
   IpAddressAddRes,
-  IpAddressEditBody,
-  IpAddressEditParam,
-  IpAddressEditRes,
   IpAddressListParam,
   IpAddressListRes,
   IpAddressRemoveBody,
   IpAddressRemoveParam,
-  IpAddressRemoveRes,
-  IpAddressSyncParam,
-  IpAddressSyncRes
+  IpAddressRemoveRes
 } from './ip-address.dto'
 
+@UseAuthGuard()
 @ApiTags('/project/:projectFriendlyId/user/@me/ip-address')
 @Controller('/project/:projectFriendlyId/user/@me/ip-address')
 export class IpAddressController {
@@ -28,15 +41,17 @@ export class IpAddressController {
 
   @HttpCode(200)
   @Get('/list')
-  async list(@Param() param: IpAddressListParam): Promise<IpAddressListRes> {
-    const me = 'b6862bc4-e1c6-42e5-86af-5044c9799157'
+  async list(
+    @Param() param: IpAddressListParam,
+    @AuthUser() user: User
+  ): Promise<IpAddressListRes> {
     const project = (await this.db.project.findUniqueOrThrow({
       where: { friendlyId: param.projectFriendlyId }
     })) as ProjectType
     const projectUser = await this.db.projectUser.findUniqueOrThrow({
       where: {
         projectId_userId: {
-          userId: me,
+          userId: user.id,
           projectId: await this.db.project.findId(param.projectFriendlyId)
         }
       },
@@ -68,16 +83,16 @@ export class IpAddressController {
   @Post('/add')
   async add(
     @Param() param: IpAddressAddParam,
-    @Body() body: IpAddressAddBody
+    @Body() body: IpAddressAddBody,
+    @AuthUser() user: User
   ): Promise<IpAddressAddRes> {
-    const me = 'b6862bc4-e1c6-42e5-86af-5044c9799157'
     const project = (await this.db.project.findUniqueOrThrow({
       where: { friendlyId: param.projectFriendlyId }
     })) as ProjectType
     const projectUser = await this.db.projectUser.findUniqueOrThrow({
       where: {
         projectId_userId: {
-          userId: me,
+          userId: user.id,
           projectId: project.id
         }
       }

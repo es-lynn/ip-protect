@@ -1,11 +1,13 @@
 import { Module } from '@nestjs/common'
 
-import { MiscModule } from './misc/misc.module'
+import { AuthModule } from './auth/auth.module'
+import { MeModule } from './me/me.module'
 import { IpAddressModule } from './project/ip-address/ip-address.module'
+import { UserModule } from './project/user/user.module'
 import { WebpageModule } from './project/webpage/webpage.module'
 
 @Module({
-  imports: [MiscModule, IpAddressModule, WebpageModule],
+  imports: [MeModule, IpAddressModule, WebpageModule, AuthModule, UserModule],
   controllers: []
 })
 export class ApiModule {}

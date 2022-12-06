@@ -1,6 +1,3 @@
-import { PrismaClient } from '@prisma/client'
-
-import { ModelService } from '../../../../core/model/model.service'
 import { PrismaService } from '../../../../core/prisma/prisma.service'
 import { UserController } from '../user.controller'
 

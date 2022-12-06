@@ -1,4 +1,4 @@
-import { DynamicModule, Global, Module } from '@nestjs/common'
+import { Module } from '@nestjs/common'
 
 import { PrismaModule } from '../prisma/prisma.module'
 import { ModelService } from './model.service'

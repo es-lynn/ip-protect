@@ -6,9 +6,7 @@ import {
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger'
 
 import { ConfigService } from '../../app/core/config/config.service'
-import { Config } from '../config/config.service'
 import { ClassValidationError } from '../errors/ClassValidationError'
-import { Format } from '../utils/Format'
 
 function logConfig(app: INestApplication): void {
   const config = app.get(ConfigService)
@@ -25,7 +23,7 @@ function useClassValidationPipe(app: INestApplication): void {
   )
 }
 
-function useGlobalErrorFilter(app: INestApplication): void {
+function useGlobalErrorFilter(_app: INestApplication): void {
   throw new NotImplementedException('useGlobalErrorFilter')
 }
 
@@ -39,7 +37,32 @@ function useSwagger(
 ): void {
   const document = SwaggerModule.createDocument(
     app,
-    new DocumentBuilder().setTitle(cfg.title).setVersion(cfg.version).build(),
+    new DocumentBuilder()
+      .setTitle(cfg.title)
+      .setVersion(cfg.version)
+      .addBearerAuth(
+        {
+          description: `Enter your Bearer token`,
+          name: 'Authorization',
+          bearerFormat: 'Bearer',
+          scheme: 'Bearer',
+          type: 'http',
+          in: 'Header'
+        },
+        'BearerToken'
+      )
+      .addBasicAuth(
+        {
+          description: `Enter your username and password`,
+          bearerFormat: 'Basic',
+          scheme: 'Basic',
+          in: 'Header',
+          name: 'Authorization',
+          type: 'http'
+        },
+        'BasicToken'
+      )
+      .build(),
     {
       operationIdFactory: (controllerKey, methodKey) => {
         return `${controllerKey

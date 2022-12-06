@@ -1,10 +1,8 @@
-import { Logger } from '@nestjs/common'
 import { NestFactory } from '@nestjs/core'
 
 import { AppModule } from './app/app.module'
 import { ConfigSchema } from './app/core/config/config.schema'
 import { ConfigService } from './app/core/config/config.service'
-import { Config } from './commons/config/config.service'
 import { nest } from './commons/nest/nest'
 
 async function bootstrap(): Promise<void> {

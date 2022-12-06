@@ -1,8 +1,8 @@
 import { Body, Controller, Get, HttpCode, Param, Post } from '@nestjs/common'
 import { ApiTags } from '@nestjs/swagger'
 
+import { UseAuthGuard } from '../../../core/guards/decorators/UseAuthGuard'
 import { PrismaService } from '../../../core/prisma/prisma.service'
-import { EditParam } from '../webpage/webpage.dto'
 import {
   AddBody,
   AddParam,
@@ -17,6 +17,7 @@ import {
 } from './user.dto'
 import { mapToUserDto } from './user.util'
 
+@UseAuthGuard()
 @ApiTags('/project/:projectFriendlyId/user')
 @Controller('/project/:projectFriendlyId/user')
 export class UserController {

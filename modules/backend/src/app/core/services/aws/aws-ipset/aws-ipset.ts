@@ -1,6 +1,5 @@
-import { Injectable } from '@nestjs/common'
 import * as AWS from 'aws-sdk'
-import { GetIPSetResponse, IPSet, LockToken } from 'aws-sdk/clients/wafv2'
+import { IPSet, LockToken } from 'aws-sdk/clients/wafv2'
 
 import { arr } from '../../../../../commons/utils/ArrayUtil'
 import { regex } from '../../../../../commons/utils/Regex'
@@ -52,7 +51,9 @@ export class AwsIpSet {
       .promise()
   }
 
-  async removeIpAddressesFromIpset(ipAddress: string | string[]) {
+  async removeIpAddressesFromIpset(
+    ipAddress: string | string[]
+  ): Promise<void> {
     const ipAddresses = formatIpAddress(ipAddress)
     const { LockToken, IPSet } = await this.getIpAddressesForIpset()
     const finalAddresses = arr.difference(IPSet.Addresses, ipAddresses)

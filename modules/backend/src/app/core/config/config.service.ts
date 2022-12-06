@@ -24,8 +24,16 @@ export class ConfigService
     access_key_id: string
     secret_access_key: string
   }
+  auth: {
+    basicPassword: string
+    certUrl: string
+    tokenUrl: string
+    redirectUrl: string
+    clientId: string
+    clientSecret: string
+  }
 
-  constructor(env: EnvService) {
+  constructor(private env: EnvService) {
     super()
     this.app = {
       port: env.getOrThrow('APP_PORT'),
@@ -40,6 +48,14 @@ export class ConfigService
     this.aws = {
       access_key_id: env.getOrThrow('AWS_ACCESS_KEY_ID'),
       secret_access_key: env.getOrThrow('AWS_SECRET_ACCESS_KEY')
+    }
+    this.auth = {
+      basicPassword: env.getOrThrow('AUTH_BASIC_PASSWORD'),
+      certUrl: env.getOrThrow('AUTH_CERT_URL'),
+      tokenUrl: env.getOrThrow('AUTH_TOKEN_URL'),
+      redirectUrl: env.getOrThrow('AUTH_REDIRECT_URL'),
+      clientId: env.getOrThrow('AUTH_CLIENT_ID'),
+      clientSecret: env.getOrThrow('AUTH_CLIENT_SECRET')
     }
   }
 }
