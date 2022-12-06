@@ -2,7 +2,7 @@ export type Data<T> = {
   data: T
 }
 
-export type Pagination<T> = {
+export type Pagination = {
   pagination: {
     first: string
     last?: string
@@ -11,7 +11,7 @@ export type Pagination<T> = {
   }
 }
 
-export type Errors<T> = {
+export type Errors = {
   errors: Error[]
 }
 

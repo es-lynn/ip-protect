@@ -1,11 +1,4 @@
-import {
-  applyDecorators,
-  CacheInterceptor,
-  CacheKey,
-  CacheTTL,
-  UseGuards,
-  UseInterceptors
-} from '@nestjs/common'
+import { applyDecorators, UseGuards } from '@nestjs/common'
 import { ApiBasicAuth, ApiBearerAuth } from '@nestjs/swagger'
 
 import { AuthGuard } from '../auth-guard'

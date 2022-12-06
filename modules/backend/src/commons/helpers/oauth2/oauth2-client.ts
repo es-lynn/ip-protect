@@ -1,6 +1,5 @@
 import axios from 'axios'
 import * as jose from 'jose'
-import { JSONWebKeySet } from 'jose'
 import { KeyLike } from 'jose/dist/types/types'
 
 import { IdTokenClaims } from './oauth2-client.types'

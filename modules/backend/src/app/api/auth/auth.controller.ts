@@ -1,6 +1,5 @@
-import { Body, Controller, HttpCode, Post, Req, Session } from '@nestjs/common'
+import { Body, Controller, HttpCode, Post } from '@nestjs/common'
 import { ApiTags } from '@nestjs/swagger'
-import { Request } from 'express'
 
 import { OAuth2Client } from '../../../commons/helpers/oauth2/oauth2-client'
 import { ConfigService } from '../../core/config/config.service'
@@ -28,7 +27,7 @@ export class AuthController {
 
   @HttpCode(200)
   @Post('/login')
-  async login(@Body() body: AuthLoginBody): Promise<AuthLoginRes> {
+  async login(@Body() _body: AuthLoginBody): Promise<AuthLoginRes> {
     // const { idTokenClaims } = await this.oauth2Client.fetchIdToken(
     //   body.code,
     //   this.config.auth.redirectUrl
@@ -43,9 +42,8 @@ export class AuthController {
     }
   }
 
-  // Logout endpoint
-  @Post('logout')
-  async logout() {
-    // Implement logout functionality here
-  }
+  // @Post('logout')
+  // async logout() {
+  // Implement logout functionality here
+  // }
 }

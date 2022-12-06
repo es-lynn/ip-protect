@@ -1,6 +1,7 @@
 - [ ] Tests
 - [x] AWS IPSet
-- [ ] Authentication Controller
+- [x] Authentication Controller
+- [ ] Infra
 - [ ] CI/CD
   - [ ] Lint, Compile, Test,
   - [ ] Build

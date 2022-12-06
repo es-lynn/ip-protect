@@ -2,7 +2,6 @@ import {
   CanActivate,
   ExecutionContext,
   Injectable,
-  NotImplementedException,
   UnauthorizedException
 } from '@nestjs/common'
 import { str } from 'src/commons/utils/StringUtil'

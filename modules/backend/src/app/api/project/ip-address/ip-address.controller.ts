@@ -1,22 +1,8 @@
-import {
-  Body,
-  Controller,
-  Get,
-  HttpCode,
-  Param,
-  Post,
-  UseGuards
-} from '@nestjs/common'
-import {
-  ApiBasicAuth,
-  ApiBearerAuth,
-  ApiHeader,
-  ApiTags
-} from '@nestjs/swagger'
+import { Body, Controller, Get, HttpCode, Param, Post } from '@nestjs/common'
+import { ApiTags } from '@nestjs/swagger'
 import { User } from '@prisma/client'
 
 import { ConfigService } from '../../../core/config/config.service'
-import { AuthGuard } from '../../../core/guards/auth-guard'
 import { AuthUser } from '../../../core/guards/decorators/AuthUser'
 import { UseAuthGuard } from '../../../core/guards/decorators/UseAuthGuard'
 import { ModelService } from '../../../core/model/model.service'
