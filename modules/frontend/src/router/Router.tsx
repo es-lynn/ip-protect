@@ -20,6 +20,8 @@ export const Router = () => {
         enabled: true,
         config: {
           screens: {
+            debug: 'debug',
+            login: 'login',
             home: 'home',
             'project/:projectFriendlyId': 'project/:projectFriendlyId'
           }
@@ -27,8 +29,8 @@ export const Router = () => {
       }}
     >
       <Stack.Navigator>
-        <Stack.Screen name={'debug'} component={DebugPage} />
         <Stack.Screen name={'login'} component={LoginPage} />
+        <Stack.Screen name={'debug'} component={DebugPage} />
         <Stack.Screen name={'home'} component={HomePage} />
         <Stack.Screen name={'project/:projectFriendlyId'} component={ProjectPage} />
       </Stack.Navigator>

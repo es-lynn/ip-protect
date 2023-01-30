@@ -7,6 +7,8 @@
   "license": "MIT",
   "private": true,
   "scripts": {
+    "docker:build": "docker build . -t ip-protect-backend:latest",
+    "clean": "npx lerna clean && rm -rf node_modules",
     "setup": "yarn install && lerna bootstrap",
     "build:all": "lerna run build",
     "compile:all": "lerna run compile",
